@@ -15,7 +15,15 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   background-color: white;
-  transition: height 0.5s ease-in-out;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+
+ul.todo-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
   overflow: hidden;
 }
 
@@ -117,7 +125,7 @@ footer button.clear-completed:hover {
   }
   100% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(-20px);
   }
 }
 
@@ -125,6 +133,7 @@ footer button.clear-completed:hover {
   animation: fadeInSlideUp 0.5s ease forwards;
 }
 
+/* Анимация удаления */
 .todo-item.removing {
   animation: fadeOutSlideDown 0.5s ease forwards;
   pointer-events: none;

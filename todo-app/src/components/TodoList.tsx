@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TodoItem from './TodoItem';
 
 interface TodoListProps {
@@ -7,15 +7,34 @@ interface TodoListProps {
 }
 
 const TodoList: React.FC<TodoListProps> = ({ todos, onToggle }) => {
+  const [removingIds, setRemovingIds] = useState<number[]>([]);
+  const ulRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    if (ulRef.current) {
+      const listHeight = ulRef.current.scrollHeight;
+      ulRef.current.style.maxHeight = `${listHeight}px`;
+    }
+  }, [todos.length]);
+
+  const handleToggle = (id: number) => {
+    setRemovingIds([...removingIds, id]);
+    setTimeout(() => {
+      setRemovingIds(removingIds.filter((removingId) => removingId !== id));
+      onToggle(id);
+    }, 500);
+  };
+
   return (
-    <ul>
+    <ul className="todo-list" ref={ulRef}>
       {todos.map((todo) => (
         <TodoItem
           key={todo.id}
           id={todo.id}
           task={todo.task}
           completed={todo.completed}
-          onToggle={() => onToggle(todo.id)}
+          onToggle={() => handleToggle(todo.id)}
+          className={removingIds.includes(todo.id) ? 'removing' : ''}
         />
       ))}
     </ul>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles/TodoItem.css';
 
 interface TodoItemProps {
@@ -6,20 +6,19 @@ interface TodoItemProps {
   task: string;
   completed: boolean;
   onToggle: () => void;
+  className?: string;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ task, completed, onToggle }) => {
-  const [isRemoving, setIsRemoving] = useState(false);
-
-  const handleUndo = () => {
-    setIsRemoving(true);
-    setTimeout(onToggle, 500);
-  };
-
+const TodoItem: React.FC<TodoItemProps> = ({
+  task,
+  completed,
+  onToggle,
+  className,
+}) => {
   return (
-    <li className={`todo-item ${isRemoving ? 'removed' : ''}`}>
+    <li className={`todo-item ${className}`}>
       <div className="checkbox-wrapper">
-        <input type="checkbox" checked={completed} onChange={handleUndo} />
+        <input type="checkbox" checked={completed} onChange={onToggle} />
       </div>
       <div className="task-wrapper">
         <span className={completed ? 'completed' : ''}>{task}</span>
