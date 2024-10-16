@@ -21,7 +21,7 @@ const App: React.FC = () => {
       const parsedTodos = JSON.parse(savedTodos) as Todo[];
       setTodos(parsedTodos);
       if (parsedTodos.length > 0) {
-        nextId = Math.max(...parsedTodos.map((todo) => todo.id)) + 1; // Устанавливаем nextId на основе максимального id
+        nextId = Math.max(...parsedTodos.map((todo) => todo.id)) + 1;
       }
     }
   }, []);
