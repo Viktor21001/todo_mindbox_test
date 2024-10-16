@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/todo_mindbox_test/static/css/main.d9284a94.css",
-    "main.js": "/todo_mindbox_test/static/js/main.5e91da45.js",
-    "static/js/453.ac79db8d.chunk.js": "/todo_mindbox_test/static/js/453.ac79db8d.chunk.js",
-    "index.html": "/todo_mindbox_test/index.html",
-    "main.d9284a94.css.map": "/todo_mindbox_test/static/css/main.d9284a94.css.map",
-    "main.5e91da45.js.map": "/todo_mindbox_test/static/js/main.5e91da45.js.map",
-    "453.ac79db8d.chunk.js.map": "/todo_mindbox_test/static/js/453.ac79db8d.chunk.js.map"
+    "main.css": "/Viktor21001/todo_mindbox_test/tree/main/src/static/css/main.d9284a94.css",
+    "main.js": "/Viktor21001/todo_mindbox_test/tree/main/src/static/js/main.fbacdb14.js",
+    "static/js/453.ac79db8d.chunk.js": "/Viktor21001/todo_mindbox_test/tree/main/src/static/js/453.ac79db8d.chunk.js",
+    "index.html": "/Viktor21001/todo_mindbox_test/tree/main/src/index.html",
+    "main.d9284a94.css.map": "/Viktor21001/todo_mindbox_test/tree/main/src/static/css/main.d9284a94.css.map",
+    "main.fbacdb14.js.map": "/Viktor21001/todo_mindbox_test/tree/main/src/static/js/main.fbacdb14.js.map",
+    "453.ac79db8d.chunk.js.map": "/Viktor21001/todo_mindbox_test/tree/main/src/static/js/453.ac79db8d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d9284a94.css",
-    "static/js/main.5e91da45.js"
+    "static/js/main.fbacdb14.js"
   ]
 }
