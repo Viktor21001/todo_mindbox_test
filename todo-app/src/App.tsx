@@ -29,6 +29,17 @@ const App: React.FC = () => {
     setTodos(updatedTodos);
   };
 
+  const editTodo = (id: number, newTask: string) => {
+    const updatedTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, task: newTask } : todo
+    );
+    setTodos(updatedTodos);
+  };
+
+  const deleteTodo = (id: number) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
   const clearCompleted = () => {
     const activeTodos = todos.filter((todo) => !todo.completed);
     setTodos(activeTodos);
@@ -56,7 +67,12 @@ const App: React.FC = () => {
         onChange={(e) => setNewTask(e.target.value)}
         onKeyPress={(e) => e.key === 'Enter' && addTodo(newTask)}
       />
-      <TodoList todos={filteredTodos} onToggle={toggleTodo} />
+      <TodoList
+        todos={filteredTodos}
+        onToggle={toggleTodo}
+        onEdit={editTodo}
+        onDelete={deleteTodo}
+      />
 
       <footer>
         <p>{itemsLeft} items left</p>

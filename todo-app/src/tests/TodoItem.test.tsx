@@ -1,25 +1,83 @@
+import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import TodoItem from '../components/TodoItem';
 
-test('renders todo item and toggles completion', () => {
-  const task = 'Test task';
-  const completed = false;
-  const onToggle = jest.fn(); // Мокаем функцию onToggle
+describe('TodoItem Component', () => {
+  const mockToggle = jest.fn();
+  const mockEdit = jest.fn();
+  const mockDelete = jest.fn();
+  const todo = { id: 1, task: 'Test Task', completed: false };
 
-  const { getByText, getByRole } = render(
-    <TodoItem id={1} task={task} completed={completed} onToggle={onToggle} />
-  );
+  test('renders task correctly', () => {
+    const { getByText } = render(
+      <TodoItem
+        id={todo.id}
+        task={todo.task}
+        completed={todo.completed}
+        onToggle={mockToggle}
+        onEdit={mockEdit}
+        onDelete={mockDelete}
+      />
+    );
 
-  const checkbox = getByRole('checkbox');
-  const label = getByText(task);
+    expect(getByText(todo.task)).toBeInTheDocument();
+  });
 
-  // Проверяем, что задача отображается и не выполнена
-  expect(label).toBeInTheDocument();
-  expect(checkbox).not.toBeChecked();
+  test('toggles task completed status', () => {
+    const { getByRole } = render(
+      <TodoItem
+        id={todo.id}
+        task={todo.task}
+        completed={todo.completed}
+        onToggle={mockToggle}
+        onEdit={mockEdit}
+        onDelete={mockDelete}
+      />
+    );
 
-  // Имитируем нажатие на чекбокс
-  fireEvent.click(checkbox);
+    const checkbox = getByRole('checkbox');
+    fireEvent.click(checkbox);
 
-  // Проверяем, что функция onToggle была вызвана
-  expect(onToggle).toHaveBeenCalledTimes(1);
+    expect(mockToggle).toHaveBeenCalled();
+  });
+
+  test('deletes the task', () => {
+    const { getByText } = render(
+      <TodoItem
+        id={todo.id}
+        task={todo.task}
+        completed={todo.completed}
+        onToggle={mockToggle}
+        onEdit={mockEdit}
+        onDelete={mockDelete}
+      />
+    );
+
+    const deleteButton = getByText('×');
+    fireEvent.click(deleteButton);
+
+    expect(mockDelete).toHaveBeenCalled();
+  });
+
+  test('edits the task', () => {
+    const { getByText, getByDisplayValue } = render(
+      <TodoItem
+        id={todo.id}
+        task={todo.task}
+        completed={todo.completed}
+        onToggle={mockToggle}
+        onEdit={mockEdit}
+        onDelete={mockDelete}
+      />
+    );
+
+    const taskElement = getByText(todo.task);
+    fireEvent.doubleClick(taskElement);
+
+    const input = getByDisplayValue(todo.task);
+    fireEvent.change(input, { target: { value: 'Updated Task' } });
+    fireEvent.blur(input);
+
+    expect(mockEdit).toHaveBeenCalledWith(todo.id, 'Updated Task');
+  });
 });

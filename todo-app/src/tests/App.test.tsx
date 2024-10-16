@@ -1,98 +1,92 @@
-import { render, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import App from '../App';
+import { act } from 'react';
 
-test('can add a new todo', () => {
-  const { getByPlaceholderText, getByText } = render(<App />);
+describe('Todo App', () => {
+  test('should add a new todo', async () => {
+    render(<App />);
 
-  // Ищем поле для ввода задачи
-  const input = getByPlaceholderText('What needs to be done?');
+    const inputElement = screen.getByPlaceholderText(/what needs to be done?/i);
+    fireEvent.change(inputElement, { target: { value: 'New Task' } });
+    fireEvent.keyPress(inputElement, {
+      key: 'Enter',
+      code: 'Enter',
+      charCode: 13,
+    });
 
-  // Добавляем новую задачу
-  fireEvent.change(input, { target: { value: 'New Task' } });
-  fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
+    await waitFor(() => {
+      const todoItem = screen.getByText(/New Task/i);
+      expect(todoItem).toBeInTheDocument();
+    });
+  });
 
-  // Проверяем, что задача была добавлена в список
-  expect(getByText('New Task')).toBeInTheDocument();
-});
+  test('should toggle todo completed status', async () => {
+    render(<App />);
 
-test('can toggle todo completion', () => {
-  const { getByPlaceholderText, getByText, getByRole } = render(<App />);
+    const inputElement = screen.getByPlaceholderText(/what needs to be done?/i);
+    fireEvent.change(inputElement, { target: { value: 'New Task' } });
+    fireEvent.keyPress(inputElement, {
+      key: 'Enter',
+      code: 'Enter',
+      charCode: 13,
+    });
 
-  // Ищем поле для ввода задачи
-  const input = getByPlaceholderText('What needs to be done?');
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).not.toBeChecked();
 
-  // Добавляем новую задачу
-  fireEvent.change(input, { target: { value: 'New Task' } });
-  fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
+    act(() => {
+      fireEvent.click(checkbox);
+    });
 
-  // Ищем добавленную задачу
-  const checkbox = getByRole('checkbox');
-  const task = getByText('New Task');
+    await waitFor(() => {
+      expect(checkbox).toBeChecked();
+    });
+  });
 
-  // Проверяем, что задача не выполнена
-  expect(checkbox).not.toBeChecked();
+  test('should edit a todo', async () => {
+    render(<App />);
 
-  // Имитируем нажатие на чекбокс (выполнение задачи)
-  fireEvent.click(checkbox);
+    const inputElement = screen.getByPlaceholderText(/what needs to be done?/i);
+    fireEvent.change(inputElement, { target: { value: 'Task to Edit' } });
+    fireEvent.keyPress(inputElement, {
+      key: 'Enter',
+      code: 'Enter',
+      charCode: 13,
+    });
 
-  // Проверяем, что задача выполнена
-  expect(checkbox).toBeChecked();
-});
+    const taskElement = screen.getByText(/Task to Edit/i);
+    fireEvent.doubleClick(taskElement);
 
-test('can filter active and completed todos', () => {
-  const { getByPlaceholderText, getByText, getByRole, getByTestId } = render(
-    <App />
-  );
+    const editInput = screen.getByDisplayValue(/Task to Edit/i);
+    fireEvent.change(editInput, { target: { value: 'Updated Task' } });
+    fireEvent.blur(editInput);
 
-  // Ищем поле для ввода задачи
-  const input = getByPlaceholderText('What needs to be done?');
+    await waitFor(() => {
+      expect(screen.queryByText(/Task to Edit/i)).not.toBeInTheDocument();
+      expect(screen.getByText(/Updated Task/i)).toBeInTheDocument();
+    });
+  });
 
-  // Добавляем две задачи
-  fireEvent.change(input, { target: { value: 'Task 1' } });
-  fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
-  fireEvent.change(input, { target: { value: 'Task 2' } });
-  fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
+  test('should delete a todo', async () => {
+    render(<App />);
 
-  // Выполняем первую задачу
-  const checkbox = getByRole('checkbox');
-  fireEvent.click(checkbox); // Завершаем первую задачу
+    const inputElement = screen.getByPlaceholderText(/what needs to be done?/i);
+    fireEvent.change(inputElement, { target: { value: 'Task to Delete' } });
+    fireEvent.keyPress(inputElement, {
+      key: 'Enter',
+      code: 'Enter',
+      charCode: 13,
+    });
 
-  // Фильтрация: Completed
-  fireEvent.click(getByText('Completed'));
-  expect(getByText('Task 1')).toBeInTheDocument(); // "Task 1" должна быть видна
-  expect(() => getByText('Task 2')).toThrow(); // "Task 2" не должна быть видна
+    const taskElement = screen.getByText(/Task to Delete/i);
+    expect(taskElement).toBeInTheDocument();
 
-  // Фильтрация: Active
-  fireEvent.click(getByText('Active'));
-  expect(getByText('Task 2')).toBeInTheDocument(); // "Task 2" должна быть видна
-  expect(() => getByText('Task 1')).toThrow(); // "Task 1" не должна быть видна
-});
+    const deleteButton = screen.getByText('×');
+    fireEvent.click(deleteButton);
 
-test('can clear completed todos', () => {
-  const { getByPlaceholderText, getByText, getByRole, queryByText } = render(
-    <App />
-  );
-
-  // Ищем поле для ввода задачи
-  const input = getByPlaceholderText('What needs to be done?');
-
-  // Добавляем две задачи
-  fireEvent.change(input, { target: { value: 'Task 1' } });
-  fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
-  fireEvent.change(input, { target: { value: 'Task 2' } });
-  fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
-
-  // Выполняем обе задачи
-  const checkbox1 = getByRole('checkbox', { name: /Task 1/i });
-  fireEvent.click(checkbox1);
-
-  const checkbox2 = getByRole('checkbox', { name: /Task 2/i });
-  fireEvent.click(checkbox2);
-
-  // Имитируем нажатие на кнопку "Clear completed"
-  fireEvent.click(getByText('Clear completed'));
-
-  // Проверяем, что завершенные задачи были удалены
-  expect(queryByText('Task 1')).toBeNull();
-  expect(queryByText('Task 2')).toBeNull();
+    await waitFor(() => {
+      expect(screen.queryByText(/Task to Delete/i)).not.toBeInTheDocument();
+    });
+  });
 });

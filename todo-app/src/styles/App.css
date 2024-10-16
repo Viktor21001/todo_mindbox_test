@@ -133,7 +133,6 @@ footer button.clear-completed:hover {
   animation: fadeInSlideUp 0.5s ease forwards;
 }
 
-/* Анимация удаления */
 .todo-item.removing {
   animation: fadeOutSlideDown 0.5s ease forwards;
   pointer-events: none;

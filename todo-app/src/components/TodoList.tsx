@@ -4,9 +4,16 @@ import TodoItem from './TodoItem';
 interface TodoListProps {
   todos: { id: number; task: string; completed: boolean }[];
   onToggle: (id: number) => void;
+  onEdit: (id: number, newTask: string) => void;
+  onDelete: (id: number) => void;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ todos, onToggle }) => {
+const TodoList: React.FC<TodoListProps> = ({
+  todos,
+  onToggle,
+  onEdit,
+  onDelete,
+}) => {
   const [removingIds, setRemovingIds] = useState<number[]>([]);
   const ulRef = useRef<HTMLUListElement>(null);
 
@@ -34,6 +41,8 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onToggle }) => {
           task={todo.task}
           completed={todo.completed}
           onToggle={() => handleToggle(todo.id)}
+          onEdit={onEdit}
+          onDelete={() => onDelete(todo.id)}
           className={removingIds.includes(todo.id) ? 'removing' : ''}
         />
       ))}
