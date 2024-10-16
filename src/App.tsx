@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TodoList from './components/TodoList';
 import './styles/App.css';
 
@@ -14,6 +14,23 @@ const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [newTask, setNewTask] = useState('');
+
+  useEffect(() => {
+    const savedTodos = localStorage.getItem('todos');
+    if (savedTodos) {
+      const parsedTodos = JSON.parse(savedTodos) as Todo[];
+      setTodos(parsedTodos);
+      if (parsedTodos.length > 0) {
+        nextId = Math.max(...parsedTodos.map((todo) => todo.id)) + 1; // Устанавливаем nextId на основе максимального id
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (todos.length > 0) {
+      localStorage.setItem('todos', JSON.stringify(todos));
+    }
+  }, [todos]);
 
   const addTodo = (task: string) => {
     if (task.trim()) {
