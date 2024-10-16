@@ -50,6 +50,31 @@ input::placeholder {
   font-style: italic;
 }
 
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 18px;
+}
+
+.input-container button {
+  padding: 10px 20px;
+  font-size: 18px;
+  margin-left: 10px;
+  background-color: #5dc2af;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.input-container button:hover {
+  background-color: #4da899;
+}
+
 footer {
   display: flex;
   justify-content: space-between;

@@ -15,17 +15,19 @@ const App: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [newTask, setNewTask] = useState('');
 
+  // Загружаем задачи из localStorage при первой загрузке приложения
   useEffect(() => {
     const savedTodos = localStorage.getItem('todos');
     if (savedTodos) {
       const parsedTodos = JSON.parse(savedTodos) as Todo[];
       setTodos(parsedTodos);
       if (parsedTodos.length > 0) {
-        nextId = Math.max(...parsedTodos.map((todo) => todo.id)) + 1;
+        nextId = Math.max(...parsedTodos.map((todo) => todo.id)) + 1; // Устанавливаем nextId на основе максимального id
       }
     }
   }, []);
 
+  // Сохраняем задачи в localStorage при каждом изменении массива todos
   useEffect(() => {
     if (todos.length > 0) {
       localStorage.setItem('todos', JSON.stringify(todos));
@@ -37,6 +39,10 @@ const App: React.FC = () => {
       setTodos([...todos, { id: nextId++, task, completed: false }]);
       setNewTask('');
     }
+  };
+
+  const handleAddTodo = () => {
+    addTodo(newTask);
   };
 
   const toggleTodo = (id: number) => {
@@ -77,13 +83,17 @@ const App: React.FC = () => {
   return (
     <div id="root">
       <h1>todos</h1>
-      <input
-        type="text"
-        placeholder="What needs to be done?"
-        value={newTask}
-        onChange={(e) => setNewTask(e.target.value)}
-        onKeyPress={(e) => e.key === 'Enter' && addTodo(newTask)}
-      />
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="What needs to be done?"
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && addTodo(newTask)}
+        />
+        <button onClick={handleAddTodo}>Enter</button>{' '}
+        {/* Кнопка Enter для добавления задачи */}
+      </div>
       <TodoList
         todos={filteredTodos}
         onToggle={toggleTodo}
